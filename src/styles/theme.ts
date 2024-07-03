@@ -7,6 +7,7 @@ const theme: DefaultTheme = {
     background: '#161C23',
     cardBg: '#1E2328',
     text: '#ADABAA',
+    textContrast: '#8484F1'
   },
 };
 

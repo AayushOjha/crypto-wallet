@@ -15,9 +15,9 @@ const App: React.FC = () => {
       <Router>
         <div style={{ minHeight: "100vh",  display: 'flex', flexDirection: 'column' }}>
           <Header />
-          <div style={{ display: "flex", flex: 1, gap: '50px', paddingTop: '20px' }}>
+          <div style={{ display: "flex", flex: 1, paddingTop: '20px' }}>
             <Sidebar />
-            <div>
+            <div style={{flex: 1, padding: '0px 50px'}}>
               <Routes>
                 <Route path="/" element={<Wallet />} />
                 <Route path="/wallet" element={<Wallet />} />
