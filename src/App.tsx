@@ -1,24 +1,29 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
-import GlobalStyle from './styles/GlobalStyle';
-import theme from './styles/theme';
-import Sidebar from './components/Sidebar';
-import Wallet from './pages/Wallet';
-import Transactions from './pages/Transactions';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import GlobalStyle from "./styles/GlobalStyle";
+import theme from "./styles/theme";
+import Sidebar from "./components/Sidebar";
+import Wallet from "./pages/Wallet";
+import Transactions from "./pages/Transactions";
+import Header from "./components/Header";
 
 const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
       <Router>
-        <div style={{ display: 'flex' }}>
-          <Sidebar />
-          <div style={{ marginLeft: '200px', padding: '20px' }}>
-            <Routes>
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/transactions" element={<Transactions />} />
-            </Routes>
+        <div style={{ minHeight: "100vh",  display: 'flex', flexDirection: 'column' }}>
+          <Header />
+          <div style={{ display: "flex", flex: 1, gap: '50px', paddingTop: '20px' }}>
+            <Sidebar />
+            <div>
+              <Routes>
+                <Route path="/" element={<Wallet />} />
+                <Route path="/wallet" element={<Wallet />} />
+                <Route path="/transactions" element={<Transactions />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </Router>
