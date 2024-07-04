@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import ImportPopup from "../components/ImportPopup";
 
 const PageHeader = styled.div`
   padding: 50px 0;
@@ -57,10 +58,14 @@ const CellItem = styled.div`
 `;
 
 const Wallet: React.FC = () => {
+
+  const [openImportPopup, setOpenImportPopup] = useState(false)
+
   return (
+    <>
     <div>
       <PageHeader>
-        <ImportBtn>
+        <ImportBtn onClick={() => setOpenImportPopup(true)}>
           <img src="icons/add.png" />
           IMPORT WALLET
         </ImportBtn>
@@ -81,25 +86,9 @@ const Wallet: React.FC = () => {
           <img src="icons/trash.png" />
         </CellItem>
       </TableRowcard>
-      <TableRowcard>
-        <CellItem>
-          <img src="icons/bitcoin.svg" /> BITCOIN
-        </CellItem>
-        <CellItem>BTC 0.00256</CellItem>
-        <CellItem>
-          <img src="icons/trash.png" />
-        </CellItem>
-      </TableRowcard>
-      <TableRowcard>
-        <CellItem>
-          <img src="icons/bitcoin.svg" /> BITCOIN
-        </CellItem>
-        <CellItem>BTC 0.00256</CellItem>
-        <CellItem>
-          <img src="icons/trash.png" />
-        </CellItem>
-      </TableRowcard>
     </div>
+    <ImportPopup isOpen={openImportPopup} setIsOpen={setOpenImportPopup} />
+    </>
   );
 };
 
