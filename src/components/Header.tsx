@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
+import { useAppSelector } from "../hooks/redux";
 
 const HeaderContainer = styled.div`
   width: 100%;
   padding: 15px 50px;
-  border-bottom: 1px solid ${(props) => props.theme.colors.text};;
+  border-bottom: 1px solid ${(props) => props.theme.colors.text};
   display: flex;
   justify-content: end;
 `;
@@ -22,11 +23,13 @@ const SyncBtn = styled.button`
 `;
 
 const Header: React.FC = () => {
+  const wallets = useAppSelector((state) => state.wallets);
+
   return (
     <HeaderContainer>
       <SyncBtn>
         <img src="icons/sync.png" />
-        Synced
+        {wallets.syncing ? "Syncing ..." : "Synced"}
       </SyncBtn>
     </HeaderContainer>
   );

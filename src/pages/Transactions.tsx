@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAppSelector } from "../hooks/redux";
 
 const PageHeader = styled.h1`
   padding: 50px 0;
@@ -45,11 +46,38 @@ const CellItem = styled.div<{ highlight?: boolean }>`
       : props.theme.colors.text};
 `;
 
+interface ITrx {
+  coin: string | null;
+  wallet: string;
+  amount: number | null;
+}
+
 const Transactions: React.FC = () => {
+  const [trxs, setTrxs] = useState<ITrx[]>([]);
+
+  const wallets = useAppSelector((state) => state.wallets);
+
+  useEffect(() => {
+    if (!wallets.syncing) {
+      let _tnxs: ITrx[] = [];
+      Object.values(wallets.wallets).forEach((_wallet) => {
+        _wallet.transactions.forEach((tnx) => {
+          _tnxs.push({
+            coin: tnx.asset,
+            wallet: _wallet.name,
+            amount: tnx.value,
+          });
+        });
+      });
+
+      setTrxs(_tnxs);
+    }
+  }, [wallets.syncing]);
+
   return (
     <div>
       <PageHeader>Transactions</PageHeader>
-      <TableTitle>Total Transactions - 03</TableTitle>
+      <TableTitle>Total Transactions - {trxs.length}</TableTitle>
       <TableRow>
         <div>Coin</div>
         <div>Wallet</div>
@@ -58,19 +86,20 @@ const Transactions: React.FC = () => {
         <div>Status</div>
       </TableRow>
 
-      <TableRowcard>
-        <CellItem>
-          <img src="icons/bitcoin.svg" />
-          <div>
-            <div style={{fontSize: '14px', fontWeight: 'bold'}}>12/11/2022</div>
-            <div style={{fontSize: '12px'}} >10:31:20 AM</div>
-          </div>
-        </CellItem>
-        <CellItem>Aru</CellItem>
-        <CellItem>BTC 0.00256</CellItem>
-        <CellItem highlight>RECIVED</CellItem>
-        <CellItem highlight>SUCCESS</CellItem>
-      </TableRowcard>
+      {trxs.map((tnx) => (
+        <TableRowcard>
+          <CellItem>
+            <img src="icons/bitcoin.svg" />
+            <div>{tnx.coin}</div>
+            {/* <div style={{fontSize: '14px', fontWeight: 'bold'}}>12/11/2022</div>
+          <div style={{fontSize: '12px'}} >10:31:20 AM</div> */}
+          </CellItem>
+          <CellItem>{tnx.wallet}</CellItem>
+          <CellItem>{tnx.amount}</CellItem>
+          <CellItem highlight>RECIVED</CellItem>
+          <CellItem highlight>SUCCESS</CellItem>
+        </TableRowcard>
+      ))}
     </div>
   );
 };

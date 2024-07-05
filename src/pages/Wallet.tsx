@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ImportPopup from "../components/ImportPopup";
 import { useAppSelector } from "../hooks/redux";
@@ -61,7 +61,18 @@ const CellItem = styled.div`
 const Wallet: React.FC = () => {
   const [openImportPopup, setOpenImportPopup] = useState(false);
 
-  const x = useAppSelector(state => state.wallets);
+  const [total, setTotal] = useState(0)
+  const wallets = useAppSelector((state) => state.wallets);
+
+  useEffect(() => {
+    if (!wallets.syncing) {
+      let _total = 0;
+      Object.values(wallets.wallets).forEach(x => {
+        _total += x.total || 0
+      })
+      setTotal(_total)
+    }
+  }, [wallets.syncing])
 
   return (
     <>
@@ -72,24 +83,26 @@ const Wallet: React.FC = () => {
             IMPORT WALLET
           </ImportBtn>
         </PageHeader>
-        <TableTitle>Total Coins - 7</TableTitle>
+        <TableTitle>Total Coins - {total}</TableTitle>
         <TableRow>
           <div>Coin</div>
           <div>Holding</div>
           <div>Action</div>
         </TableRow>
 
-        <TableRowcard>
-          <CellItem>
-            <img src="icons/bitcoin.svg" /> BITCOIN
-          </CellItem>
-          <CellItem>BTC 0.00256</CellItem>
-          <CellItem>
-            <img src="icons/trash.png" />
-          </CellItem>
-        </TableRowcard>
+        {Object.values(wallets.wallets).map((w) => (
+          <TableRowcard>
+            <CellItem>
+              <img src="icons/bitcoin.svg" /> {w.transactions[0]?.asset}
+            </CellItem>
+            <CellItem>{w.total}</CellItem>
+            <CellItem>
+              <img src="icons/trash.png" />
+            </CellItem>
+          </TableRowcard>
+        ))}
 
-        {JSON.stringify(x)}
+        {JSON.stringify(wallets)}
       </div>
       <ImportPopup isOpen={openImportPopup} setIsOpen={setOpenImportPopup} />
     </>
