@@ -86,7 +86,6 @@ const ImportPopup = ({ isOpen, setIsOpen }: IProps) => {
 
     try {
       const wallet = new ethers.Wallet(privateKey);
-      console.log("Address: " + wallet.address);
 
       dispatch(fetchWalletData({address: wallet.address, name}));
     } catch (error) {

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useAppSelector } from "../hooks/redux";
+import { useAppDispatch, useAppSelector } from "../hooks/redux";
+import { fetchAllWalletData } from "../store/walletSlice";
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -24,10 +25,16 @@ const SyncBtn = styled.button`
 
 const Header: React.FC = () => {
   const wallets = useAppSelector((state) => state.wallets);
+  const dispatch = useAppDispatch()
 
   return (
     <HeaderContainer>
-      <SyncBtn>
+      <SyncBtn 
+      onClick={() => {
+        const payload = Object.keys(wallets.wallets).map(address => ({address, name: wallets.wallets[address].name}))
+         dispatch(fetchAllWalletData(payload))
+      }}
+      >
         <img src="icons/sync.png" />
         {wallets.syncing ? "Syncing ..." : "Synced"}
       </SyncBtn>

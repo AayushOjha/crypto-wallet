@@ -19,6 +19,14 @@ const fetchWalletData = createAsyncThunk(
   }
 );
 
+const fetchAllWalletData = createAsyncThunk(
+  "wallets/fetchAllWalletData",
+  async (props: IFetchWalletDataPayload[]) => {
+    const response = await WalletApi.getTnxsAll(props);
+    return { response, props };
+  }
+);
+
 export const walletSlice = createSlice({
   name: "wallets",
   initialState: initialState,
@@ -30,9 +38,9 @@ export const walletSlice = createSlice({
       })
       .addCase(fetchWalletData.fulfilled, (state, action) => {
         let total = 0;
-        action.payload.response.transfers.forEach(x => {
-          total += x.value || 0
-        })
+        action.payload.response.transfers.forEach((x) => {
+          total += x.value || 0;
+        });
         state.wallets[action.payload.address] = {
           name: action.payload.name,
           total,
@@ -41,13 +49,39 @@ export const walletSlice = createSlice({
           ),
         };
         state.syncing = false;
-      }).addCase(fetchWalletData.rejected, (state, action) => {
-        console.error(action.payload)
-        alert("Some thing went wrong!")
+      })
+      .addCase(fetchWalletData.rejected, (state, action) => {
+        console.error(action.payload);
+        alert("Some thing went wrong!");
         state.syncing = false;
       })
+      .addCase(fetchAllWalletData.pending, (state) => {
+        state.syncing = true;
+      })
+      .addCase(fetchAllWalletData.fulfilled, (state, action) => {
+        for (const index in action.payload.props) { 
+          let total = 0;
+          let mapItem = action.payload.response[index]
+          mapItem.transfers.forEach((x) => {
+            total += x.value || 0;
+          });
+          state.wallets[action.payload.props[index].address] = {
+            name: action.payload.props[index].name,
+            total,
+            transactions: mapItem.transfers.map(
+              ({ asset, category, value }) => ({ asset, category, value })
+            ),
+          };
+        }
+        state.syncing = false;
+      })
+      .addCase(fetchAllWalletData.rejected, (state, action) => {
+        console.error(action.payload);
+        alert("Some thing went wrong!");
+        state.syncing = false;
+      });
   },
 });
 
-export { fetchWalletData };
+export { fetchWalletData, fetchAllWalletData };
 export default walletSlice.reducer;

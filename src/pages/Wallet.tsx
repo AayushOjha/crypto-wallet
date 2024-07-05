@@ -31,7 +31,7 @@ const TableTitle = styled.div`
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 3fr 3fr 1fr;
+  grid-template-columns: 3fr 1fr 3fr 1fr;
   grid-template-rows: 1fr;
   grid-gap: 10px;
   align-item: center;
@@ -41,7 +41,7 @@ const TableRow = styled.div`
 
 const TableRowcard = styled.div`
   display: grid;
-  grid-template-columns: 3fr 3fr 1fr;
+  grid-template-columns: 3fr 1fr 3fr 1fr;
   grid-template-rows: 1fr;
   grid-gap: 10px;
   margin: 15px 0;
@@ -86,6 +86,7 @@ const Wallet: React.FC = () => {
         <TableTitle>Total Coins - {total}</TableTitle>
         <TableRow>
           <div>Coin</div>
+          <div>Name</div>
           <div>Holding</div>
           <div>Action</div>
         </TableRow>
@@ -95,6 +96,7 @@ const Wallet: React.FC = () => {
             <CellItem>
               <img src="icons/bitcoin.svg" /> {w.transactions[0]?.asset}
             </CellItem>
+            <CellItem>{w.name}</CellItem>
             <CellItem>{w.total}</CellItem>
             <CellItem>
               <img src="icons/trash.png" />
@@ -102,7 +104,7 @@ const Wallet: React.FC = () => {
           </TableRowcard>
         ))}
 
-        {JSON.stringify(wallets)}
+        {/* {JSON.stringify(wallets)} */}
       </div>
       <ImportPopup isOpen={openImportPopup} setIsOpen={setOpenImportPopup} />
     </>
