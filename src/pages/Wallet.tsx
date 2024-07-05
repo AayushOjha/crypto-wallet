@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import ImportPopup from "../components/ImportPopup";
+import { useAppSelector } from "../hooks/redux";
 
 const PageHeader = styled.div`
   padding: 50px 0;
@@ -58,36 +59,39 @@ const CellItem = styled.div`
 `;
 
 const Wallet: React.FC = () => {
+  const [openImportPopup, setOpenImportPopup] = useState(false);
 
-  const [openImportPopup, setOpenImportPopup] = useState(false)
+  const x = useAppSelector(state => state.wallets);
 
   return (
     <>
-    <div>
-      <PageHeader>
-        <ImportBtn onClick={() => setOpenImportPopup(true)}>
-          <img src="icons/add.png" />
-          IMPORT WALLET
-        </ImportBtn>
-      </PageHeader>
-      <TableTitle>Total Coins - 7</TableTitle>
-      <TableRow>
-        <div>Coin</div>
-        <div>Holding</div>
-        <div>Action</div>
-      </TableRow>
+      <div>
+        <PageHeader>
+          <ImportBtn onClick={() => setOpenImportPopup(true)}>
+            <img src="icons/add.png" />
+            IMPORT WALLET
+          </ImportBtn>
+        </PageHeader>
+        <TableTitle>Total Coins - 7</TableTitle>
+        <TableRow>
+          <div>Coin</div>
+          <div>Holding</div>
+          <div>Action</div>
+        </TableRow>
 
-      <TableRowcard>
-        <CellItem>
-          <img src="icons/bitcoin.svg" /> BITCOIN
-        </CellItem>
-        <CellItem>BTC 0.00256</CellItem>
-        <CellItem>
-          <img src="icons/trash.png" />
-        </CellItem>
-      </TableRowcard>
-    </div>
-    <ImportPopup isOpen={openImportPopup} setIsOpen={setOpenImportPopup} />
+        <TableRowcard>
+          <CellItem>
+            <img src="icons/bitcoin.svg" /> BITCOIN
+          </CellItem>
+          <CellItem>BTC 0.00256</CellItem>
+          <CellItem>
+            <img src="icons/trash.png" />
+          </CellItem>
+        </TableRowcard>
+
+        {JSON.stringify(x)}
+      </div>
+      <ImportPopup isOpen={openImportPopup} setIsOpen={setOpenImportPopup} />
     </>
   );
 };

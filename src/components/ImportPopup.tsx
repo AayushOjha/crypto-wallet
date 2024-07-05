@@ -1,16 +1,9 @@
 import { useState } from "react";
 import Popup from "reactjs-popup";
 import styled from "styled-components";
-import * as bitcoinjs from "bitcoinjs-lib";
-// import * as ecc from 'tiny-secp256k1';
-import ecc from '@bitcoinerlab/secp256k1';
-import { ECPairFactory } from 'ecpair';
 import { fetchWalletData } from "../store/walletSlice";
 import { useAppDispatch } from "../hooks/redux";
-// import { Buffer } from "buffer";
-
-// window.Buffer = window.Buffer || Buffer;
-
+import { ethers } from "ethers";
 interface IProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
@@ -74,15 +67,17 @@ const Submit = styled.button`
   display: block;
 `;
 
-const network = bitcoinjs.networks.testnet;
-const ECPair = ECPairFactory(ecc);
-
 const ImportPopup = ({ isOpen, setIsOpen }: IProps) => {
-
   const dispatch = useAppDispatch();
 
   const [name, setName] = useState("");
   const [privateKey, setPrivateKey] = useState("");
+
+  const handleClose = () => {
+    setName("");
+    setPrivateKey("");
+    setIsOpen(false);
+  };
 
   const handleSubmit = () => {
     if (!name || !privateKey) {
@@ -90,36 +85,18 @@ const ImportPopup = ({ isOpen, setIsOpen }: IProps) => {
     }
 
     try {
+      const wallet = new ethers.Wallet(privateKey);
+      console.log("Address: " + wallet.address);
 
-      
-
-      // logic
-
-      // const x0x = "L5GNiUZC8g5CSGpTRYQoUH8QfXrQSLpmZtrtf2riVXzi1nk2Wzhk";
-      // const x0x = "KzBJ2jLeuCpQ5entqin7u37EHdovBMj7yqYWCsXYZbb6JArcw3gW";
-      const x0x = "Kyb3YJyNAhsHEE1tR5B7uEXWtWu2BStTtkiGHKAAVPvawPpF1xBw";
-      // addr: tb1qjncu9msgxdungg7qqcrtpz5kd8z8ltd4wpyacl
-
-      dispatch(fetchWalletData('msMgk6qaS5sso4CTao22VaUY8rbFPp3ThT'))
-
-      // console.log(network)
-      // const keyPair = ECPair.fromWIF(x0x, bitcoinjs.networks.testnet);
-      // const { address } = bitcoinjs.payments.p2wpkh({
-      //   pubkey: keyPair.publicKey,
-      //   network: bitcoinjs.networks.testnet,
-      // });
-      
-      // clean
-      setName("");
-      setPrivateKey("");
+      dispatch(fetchWalletData({address: wallet.address, name}));
     } catch (error) {
       console.error(error);
     }
-    // setIsOpen(false);
+    handleClose();
   };
 
   return (
-    <Popup open={isOpen} onClose={() => setIsOpen(false)}>
+    <Popup open={isOpen} onClose={handleClose}>
       <ContentBox>
         <Title> Import Wallet </Title>
 
@@ -146,7 +123,7 @@ const ImportPopup = ({ isOpen, setIsOpen }: IProps) => {
 
         <Submit onClick={handleSubmit}>Submit</Submit>
 
-        <CloseBtn>
+        <CloseBtn onClick={handleClose}>
           <img src="icons/cross.png" />
         </CloseBtn>
       </ContentBox>
